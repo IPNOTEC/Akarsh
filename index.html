@@ -94,35 +94,81 @@
             color:var(--yellow); margin-bottom:30px; opacity:.9;
         }
 
-        /* Clock wheel */
-        .clock-wrap {
-            position:relative; width:160px; height:160px; margin:0 auto 30px;
+        /* ── HYPNOTIC VORTEX ── */
+        .hypno-wrap {
+            position:relative; width:220px; height:220px;
+            margin:0 auto 30px; flex-shrink:0;
         }
-        .clock-ring {
-            width:100%; height:100%; border-radius:50%;
-            border:3px solid transparent;
-            border-top-color:var(--cyan);
-            border-right-color:var(--violet);
-            animation:spinRing 3s linear infinite;
+
+        /* Outer glow halo */
+        .hypno-wrap::before {
+            content:''; position:absolute;
+            inset:-18px; border-radius:50%;
+            background:radial-gradient(circle, rgba(0,243,255,0.18) 0%, transparent 70%);
+            animation:haloPulse 3s ease-in-out infinite alternate;
+            pointer-events:none;
+        }
+        @keyframes haloPulse {
+            from { transform:scale(.9); opacity:.5; }
+            to   { transform:scale(1.1); opacity:1;  }
+        }
+
+        /* SVG canvas */
+        .hypno-svg {
+            width:100%; height:100%;
+            animation:hypnoSpin 12s linear infinite;
+            filter:drop-shadow(0 0 14px rgba(0,243,255,0.7));
+        }
+        @keyframes hypnoSpin { to { transform:rotate(360deg); } }
+
+        /* Rings inside SVG — counter-spin layers via CSS */
+        .ring-a { animation:hypnoSpin 8s linear infinite; transform-origin:110px 110px; }
+        .ring-b { animation:hypnoSpin 5s linear infinite reverse; transform-origin:110px 110px; }
+        .ring-c { animation:hypnoSpin 3s linear infinite; transform-origin:110px 110px; }
+
+        /* Outer spinner rings (DOM) */
+        .spin-ring {
+            position:absolute; border-radius:50%;
+            border:2.5px solid transparent; pointer-events:none;
+        }
+        .sr1 {
+            inset:0;
+            border-top-color:var(--cyan); border-right-color:rgba(0,243,255,.3);
+            animation:hypnoSpin 3s linear infinite;
+            box-shadow:0 0 18px rgba(0,243,255,.4);
+        }
+        .sr2 {
+            inset:12px;
+            border-bottom-color:var(--violet); border-left-color:rgba(191,95,255,.3);
+            animation:hypnoSpin 2s linear infinite reverse;
+            box-shadow:0 0 14px rgba(191,95,255,.4);
+        }
+        .sr3 {
+            inset:24px;
+            border-top-color:var(--green); border-right-color:rgba(57,255,20,.3);
+            animation:hypnoSpin 4s linear infinite;
+            box-shadow:0 0 10px rgba(57,255,20,.4);
+        }
+        .sr4 {
+            inset:36px;
+            border-bottom-color:var(--yellow); border-left-color:rgba(255,230,0,.3);
+            animation:hypnoSpin 1.5s linear infinite reverse;
+        }
+        .sr5 {
+            inset:48px;
+            border-top-color:var(--orange); border-right-color:rgba(255,140,0,.3);
+            animation:hypnoSpin 2.5s linear infinite;
+        }
+
+        /* Centre icon */
+        .hypno-center {
             position:absolute; inset:0;
-            box-shadow:inset 0 0 30px rgba(0,243,255,0.15), 0 0 25px rgba(0,243,255,0.2);
-        }
-        .clock-ring2 {
-            width:70%; height:70%; border-radius:50%;
-            border:2px solid transparent;
-            border-bottom-color:var(--green);
-            border-left-color:var(--orange);
-            animation:spinRing 2s linear infinite reverse;
-            position:absolute; inset:15%;
-        }
-        .clock-center {
-            position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-            font-size:2.8rem;
-            filter:drop-shadow(0 0 10px var(--cyan));
+            display:flex; align-items:center; justify-content:center;
+            font-size:2.6rem; z-index:2;
+            filter:drop-shadow(0 0 12px var(--cyan));
             animation:iconBob 2s ease-in-out infinite alternate;
         }
-        @keyframes spinRing { to{transform:rotate(360deg)} }
-        @keyframes iconBob { from{transform:scale(.9)} to{transform:scale(1.1)} }
+        @keyframes iconBob { from{transform:scale(.88)} to{transform:scale(1.12)} }
 
         .splash-desc {
             font-size:clamp(1rem,4vw,1.2rem); color:rgba(255,255,255,.75);
@@ -419,6 +465,22 @@
 <div id="flash"></div>
 <div id="toast">✅ PROMPT COPIED!</div>
 
+<!-- ══ VORTEX OVERLAY ══ -->
+<div id="vortexOverlay"></div>
+
+<!-- ══ TERMINAL OVERLAY ══ -->
+<div id="terminalOverlay">
+    <div class="term-box">
+        <div class="term-bar">
+            <div class="term-dot td-r"></div>
+            <div class="term-dot td-y"></div>
+            <div class="term-dot td-g"></div>
+            <div class="term-title">AKARSH'S TIME MACHINE — TERMINAL</div>
+        </div>
+        <div class="term-body" id="termBody"></div>
+    </div>
+</div>
+
 <div id="wrapper">
 
     <!-- ══ SPLASH ══ -->
@@ -428,10 +490,42 @@
         <div class="logo-title">AKARSH'S<br>TIME MACHINE</div>
         <div class="logo-sub">BUILD YOUR WORLD</div>
 
-        <div class="clock-wrap">
-            <div class="clock-ring"></div>
-            <div class="clock-ring2"></div>
-            <div class="clock-center">⏰</div>
+        <div class="hypno-wrap">
+            <svg class="hypno-svg" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <radialGradient id="rg1" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%"   stop-color="#00F3FF" stop-opacity="0.9"/>
+                        <stop offset="40%"  stop-color="#BF5FFF" stop-opacity="0.6"/>
+                        <stop offset="100%" stop-color="#07091A" stop-opacity="0"/>
+                    </radialGradient>
+                </defs>
+                <g class="ring-a">
+                    <circle cx="110" cy="110" r="100" fill="none" stroke="#FF0000" stroke-width="1.5" stroke-dasharray="18 10" opacity=".7"/>
+                    <circle cx="110" cy="110" r="88"  fill="none" stroke="#FF6900" stroke-width="1.5" stroke-dasharray="16 12" opacity=".75"/>
+                </g>
+                <g class="ring-b">
+                    <circle cx="110" cy="110" r="76"  fill="none" stroke="#FFE600" stroke-width="2"   stroke-dasharray="14 10" opacity=".8"/>
+                    <circle cx="110" cy="110" r="64"  fill="none" stroke="#39FF14" stroke-width="2"   stroke-dasharray="12 10" opacity=".85"/>
+                </g>
+                <g class="ring-c">
+                    <circle cx="110" cy="110" r="52"  fill="none" stroke="#00F3FF" stroke-width="2.5" stroke-dasharray="10 8"  opacity=".9"/>
+                    <circle cx="110" cy="110" r="40"  fill="none" stroke="#0070C0" stroke-width="2.5" stroke-dasharray="8 8"   opacity=".9"/>
+                    <circle cx="110" cy="110" r="28"  fill="none" stroke="#BF5FFF" stroke-width="3"   stroke-dasharray="6 6"   opacity="1"/>
+                </g>
+                <g opacity=".2" stroke="#00F3FF" stroke-width="1">
+                    <line x1="110" y1="10"  x2="110" y2="210"/>
+                    <line x1="10"  y1="110" x2="210" y2="110"/>
+                    <line x1="39"  y1="39"  x2="181" y2="181"/>
+                    <line x1="181" y1="39"  x2="39"  y2="181"/>
+                </g>
+                <circle cx="110" cy="110" r="22" fill="url(#rg1)" opacity=".9"/>
+            </svg>
+            <div class="spin-ring sr1"></div>
+            <div class="spin-ring sr2"></div>
+            <div class="spin-ring sr3"></div>
+            <div class="spin-ring sr4"></div>
+            <div class="spin-ring sr5"></div>
+            <div class="hypno-center">⏰</div>
         </div>
 
         <p class="splash-desc">
@@ -439,7 +533,7 @@
             <strong>Gemini AI or ChatGPT</strong> to see amazing pictures! 🚀
         </p>
 
-        <button class="big-btn" id="startBtn">🚀 START TIME MACHINE</button>
+        <button class="big-btn" id="startBtn">⚡ ACTIVATE TIME MACHINE</button>
 
         <div class="footer" style="padding-top:30px">
             <span>IPNOTEC CORP</span> · AKARSH'S TIME MACHINE
@@ -681,35 +775,38 @@ function collectAnswers(){
 
 /* ─── GENERATE SUMMARY ─── */
 function generateSummary(a){
-    return `🌍 My world is set in ${a[0] || 'an unknown time'}. ` +
-           `${a[1] ? `You'll meet ${a[1]} there. ` : ''}` +
-           `${a[2] ? `I will be ${a[2]}. ` : ''}` +
-           `${a[3] ? `Everyone uses ${a[3]} as their main device. ` : ''}` +
-           `${a[4] ? `As for danger — ${a[4]}. ` : ''}` +
-           `${a[5] ? `People eat from ${a[5]}. ` : ''}` +
-           `${a[6] ? `Water comes from ${a[6]}. ` : ''}` +
-           `${a[7] ? `Buildings look like ${a[7]}. ` : ''}` +
-           `${a[8] ? `My house is ${a[8]}. ` : ''}` +
-           `${a[9] ? `For learning — ${a[9]}. ` : ''}` +
-           `${a[10] ? `And I'm holding ${a[10]}! ` : ''}` +
-           `This is the world Akarsh's Time Machine built! 🚀`;
+    var s = '🌍 My world is set in ' + (a[0]||'an unknown time') + '. ';
+    if(a[1])  s += 'You will meet ' + a[1] + ' there. ';
+    if(a[2])  s += 'I will be doing this: ' + a[2] + '. ';
+    if(a[3])  s += 'Everyone uses ' + a[3] + ' as their main device. ';
+    if(a[4])  s += 'As for danger: ' + a[4] + '. ';
+    if(a[5])  s += 'People eat from ' + a[5] + '. ';
+    if(a[6])  s += 'Water comes from ' + a[6] + '. ';
+    if(a[7])  s += 'Buildings look like ' + a[7] + '. ';
+    if(a[8])  s += 'My house is ' + a[8] + '. ';
+    if(a[9])  s += 'For learning: ' + a[9] + '. ';
+    if(a[10]) s += 'And I am holding ' + a[10] + '! ';
+    s += 'This is the world Akarsh\'s Time Machine built! 🚀';
+    return s;
 }
 
 /* ─── GENERATE AI PROMPT ─── */
 function generatePrompt(a){
-    return `Create a detailed, colorful, cinematic illustration of this world:\n\n` +
-           `TIME PERIOD: ${a[0] || 'Unknown era'}\n` +
-           `INHABITANTS: ${a[1] || 'unknown creatures'}\n` +
-           `MAIN CHARACTER ACTION: ${a[2] || 'exploring'}\n` +
-           `TECHNOLOGY DEVICE: ${a[3] || 'a futuristic gadget'}\n` +
-           `CONFLICT OR PEACE: ${a[4] || 'peaceful land'}\n` +
-           `FOOD SOURCE: ${a[5] || 'magical farms'}\n` +
-           `WATER SOURCE: ${a[6] || 'crystal springs'}\n` +
-           `BUILDINGS: ${a[7] || 'futuristic structures'}\n` +
-           `MY HOUSE: ${a[8] || 'a cozy home'}\n` +
-           `EDUCATION: ${a[9] || 'advanced learning'}\n` +
-           `HELD ITEM: ${a[10] || 'a magical tool'}\n\n` +
-           `Style: vibrant, epic, kid-friendly sci-fi fantasy illustration, ultra-detailed, glowing colours, wide cinematic shot. Make it look like a movie poster for a children's adventure.`;
+    var n = '\n';
+    var s = 'Create a detailed, colorful, cinematic illustration of this world:' + n + n;
+    s += 'TIME PERIOD: '           + (a[0]||'Unknown era')            + n;
+    s += 'INHABITANTS: '           + (a[1]||'unknown creatures')       + n;
+    s += 'MAIN CHARACTER ACTION: ' + (a[2]||'exploring')               + n;
+    s += 'TECHNOLOGY DEVICE: '     + (a[3]||'a futuristic gadget')     + n;
+    s += 'CONFLICT OR PEACE: '     + (a[4]||'peaceful land')           + n;
+    s += 'FOOD SOURCE: '           + (a[5]||'magical farms')           + n;
+    s += 'WATER SOURCE: '          + (a[6]||'crystal springs')         + n;
+    s += 'BUILDINGS: '             + (a[7]||'futuristic structures')   + n;
+    s += 'MY HOUSE: '              + (a[8]||'a cozy home')             + n;
+    s += 'EDUCATION: '             + (a[9]||'advanced learning')       + n;
+    s += 'HELD ITEM: '             + (a[10]||'a magical tool')         + n + n;
+    s += 'Style: vibrant, epic, kid-friendly sci-fi fantasy illustration, ultra-detailed, glowing colours, wide cinematic shot. Make it look like a movie poster for a childrens adventure.';
+    return s;
 }
 
 /* ─── SUBMIT ─── */
@@ -773,14 +870,109 @@ document.getElementById('restartBtn').addEventListener('click',function(){
     window.scrollTo({top:0,behavior:'smooth'});
 });
 
+/* ─── VIBGYOR BURST TEXTS ─── */
+const burstWords = [
+    "TEMPORAL FLUX DETECTED","TIMELINE CONVERGENCE","QUANTUM ENTANGLEMENT ACTIVE",
+    "CHRONAL ENERGY SURGE","PARADOX PROTOCOL ENGAGED","TIME STREAM STABILIZING",
+    "ALTERNATE REALITY INTERFACE","HISTORICAL ANOMALY DETECTED","FUTURE ECHOES RECEIVED",
+    "PAST IMPRINTS SYNCHRONIZED","TIME VORTEX FORMING","DIMENSIONAL GATEWAY OPEN",
+    "TEMPORAL COORDINATES LOCKED","REALITY MATRIX SHIFTING","TIME CRYSTAL ACTIVATED",
+    "CHRONON FIELD STABILIZED","CHRONAL SYNCHRONIZATION COMPLETE","TIME DILATION EFFECT"
+];
+const burstColors = ['#00F3FF','#BF5FFF','#39FF14','#FFE600','#FF8C00','#FF0000','#FF6EB4'];
+
+function fireBurst(count){
+    for(let i=0;i<count;i++){
+        setTimeout(()=>{
+            var el=document.createElement('div');
+            el.className='burst-text';
+            el.textContent=burstWords[Math.floor(Math.random()*burstWords.length)];
+            var col=burstColors[Math.floor(Math.random()*burstColors.length)];
+            el.style.left=(Math.random()*80+5)+'%';
+            el.style.top=(Math.random()*75+5)+'%';
+            el.style.color=col;
+            el.style.fontSize=(Math.random()*8+11)+'px';
+            el.style.textShadow='0 0 12px '+col;
+            document.body.appendChild(el);
+            setTimeout(function(){ el.remove(); },2500);
+        }, i*220);
+    }
+}
+
+/* ─── SOUND ─── */
+function playVortexSound(){
+    try {
+        const ctx=new (window.AudioContext||window.webkitAudioContext)();
+        const osc=ctx.createOscillator();
+        const gain=ctx.createGain();
+        osc.type='sawtooth';
+        osc.frequency.setValueAtTime(110,ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880,ctx.currentTime+1.2);
+        gain.gain.setValueAtTime(0.12,ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+1.2);
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.start(); osc.stop(ctx.currentTime+1.2);
+    } catch(e){}
+}
+
+/* ─── TERMINAL TYPEWRITER ─── */
+function runTerminal(cb){
+    const overlay=document.getElementById('terminalOverlay');
+    const body=document.getElementById('termBody');
+    overlay.classList.add('show');
+    body.innerHTML='';
+
+    var lines=[
+        {t:30,  html:'<span class="t-green">> INITIALIZING AKARSH\'S TIME MACHINE...</span>\n'},
+        {t:600, html:'IPNOTEC CORP — TEMPORAL ENGINE v3.0\n'},
+        {t:900, html:'─────────────────────────────────\n'},
+        {t:1200,html:'LOADING TEMPORAL PARAMETERS... <span class="t-green">OK</span>\n'},
+        {t:1600,html:'TIMELINE INTEGRITY CHECK... <span class="t-green">PASSED</span>\n'},
+        {t:2000,html:'QUANTUM COHERENCE... <span class="t-green">STABLE</span>\n'},
+        {t:2400,html:'<span class="t-green">> CONNECT USER</span>\n'},
+        {t:2800,html:'USER CONNECTED\n──────────────\n'},
+        {t:3100,html:'ID: IPN-TM-'+Math.floor(100000+Math.random()*900000)+'\n'},
+        {t:3400,html:'STATUS: <span class="t-green">ACTIVE</span>\n'},
+        {t:3700,html:'\n<span class="t-cyan">> TIME MACHINE INTERFACE READY</span> <span class="t-blink"></span>'}
+    ];
+
+    lines.forEach(({t,html})=>{
+        setTimeout(()=>{
+            body.innerHTML+=html;
+            body.scrollTop=body.scrollHeight;
+        },t);
+    });
+
+    setTimeout(()=>{
+        overlay.classList.remove('show');
+        cb();
+    },5000);
+}
+
 /* ─── START ─── */
 document.getElementById('startBtn').addEventListener('click',function(){
-    flash();
-    document.getElementById('splash').style.display='none';
-    buildCards();
-    updateProgress();
-    document.getElementById('questScreen').style.display='block';
-    window.scrollTo({top:0,behavior:'smooth'});
+    playVortexSound();
+
+    // 1 — fire vortex overlay
+    const vo=document.getElementById('vortexOverlay');
+    vo.classList.add('active');
+
+    // 2 — burst text salvo
+    fireBurst(7);
+
+    // 3 — after 1.8s vortex fades, terminal takes over
+    setTimeout(()=>{
+        vo.classList.remove('active');
+        document.getElementById('splash').style.display='none';
+
+        // terminal sequence, then show questions
+        runTerminal(()=>{
+            buildCards();
+            updateProgress();
+            document.getElementById('questScreen').style.display='block';
+            window.scrollTo({top:0,behavior:'smooth'});
+        });
+    },1800);
 });
 </script>
 </body>
